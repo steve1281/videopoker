@@ -8,8 +8,6 @@ from vp_odds import *
 """
 class MyView(ui.View):
 
-
-
     def cardN_button(self,n):
         if self.step == 2 or self.step == 0:
             pass
@@ -41,21 +39,18 @@ class MyView(ui.View):
 
     def set_bet_5(self, sender):
         if self.step ==0:
-            print "set_bet_5"
             self.bet_amount = 5
             self.play_coin = self.make_button(self.set_bet_10, "cards/5coin.png")
             self.set_needs_display()
 
     def set_bet_10(self, sender):
         if self.step ==0:
-            print "set_bet_10"
             self.bet_amount = 10
             self.play_coin = self.make_button(self.set_bet_20, "cards/10coin.png")
             self.set_needs_display()
 
     def set_bet_20(self, sender):
         if self.step ==0:
-            print "set_bet_20"
             self.bet_amount = 20
             self.play_coin = self.make_button(self.set_bet_5, "cards/20coin.png")
             self.set_needs_display()
@@ -67,7 +62,7 @@ class MyView(ui.View):
         """     
         self.bet_amount = 5 # default bet is 5
         
-        self.stage = "help"  # play, title, help
+        self.stage = "title"  # play, title, help
         
         self.title_b = self.make_button(self.goto_play_screen, "cards/play.png")
         self.help_b = self.make_button(self.goto_play_screen, "cards/play.png")
@@ -76,7 +71,7 @@ class MyView(ui.View):
         
 
         self.message = "Click deal."
-        self.balance = 20
+        self.balance = 100
         self.cm = Cards()
         self.content_mode=ui.CONTENT_SCALE_ASPECT_FIT
         self.card_imgs=[]
@@ -115,12 +110,8 @@ class MyView(ui.View):
             SCORE HAND
         """
         vodds = vp_odds()
-        
         x,s = vodds.calculate_payout(self.hand, self.bet_amount)
-        # todo: what happens if you run out of money? x < 0?
-        
         self.message = s + ' pays: $'+ str(x)
-            
         return x
         
         
@@ -234,16 +225,60 @@ class MyView(ui.View):
             self.add_subview(self.play_b)
             
         if self.stage == "help":
-            # add in our views  
+            # add in our views
             self.add_subview(self.help_b)
+            tit = ui.Label()
+            tit.x = 100
+            tit.y = 0
+            tit.height = 60
+            tit.width = 500
+            tit.text = "Video Poker - Help"
+            self.add_subview(tit)
+            
+            v = vp_odds()
+            list_odds = v.list_odds()
+            for i in range(0, len(list_odds)):
+                x = ui.Label()
+                x.x = 10
+                x.y = 100 + i*30
+                x.height = 30
+                x.width = 350
+                x.text = list_odds[i]
+                self.add_subview(x)
+                
         
         if self.stage == "title":
+            tit = ui.Label()
+            tit.x = 100
+            tit.y = 0
+            tit.height = 60
+            tit.width = 500
+            tit.text = "- Video Poker - "
+            self.add_subview(tit)
+
             self.add_subview(self.title_b)
         
         if self.stage == 'broke':
+            tit = ui.Label()
+            tit.x = 100
+            tit.y = 0
+            tit.height = 60
+            tit.width = 500
+            tit.text = "- Video Poker - "
+            self.add_subview(tit)
+
             self.add_subview(self.title_b)
             self.balance = 100
             self.score_value_label.text = "$" + str(self.balance)
+            list_text = ['You are broke!','I will credit you 100 dollars,','Press play to continue.']
+            for i in range(0, len(list_text)):
+                x = ui.Label()
+                x.x = 10
+                x.y = 100 + i*30
+                x.height = 30
+                x.width = 350
+                x.text = list_text[i]
+                self.add_subview(x)
             
             
     def layout(self):
